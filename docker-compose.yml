@@ -1,0 +1,29 @@
+services:
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: chromadb
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/.chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+
+  gradio-rag-app:
+    build: .
+    container_name: gradio-rag-app
+    depends_on:
+      - chromadb
+    volumes:
+      - .:/gradio_RAG
+    ports:
+      - "8484:8484"
+    environment:
+      - CHROMA_URL=http://chromadb:8000
+      - PYTHONUNBUFFERED=1
+    command:
+      "python app.py"
+
+
+volumes:
+  chroma_data:
