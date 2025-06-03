@@ -1,6 +1,7 @@
 import gradio as gr
 import os
-import shutil
+from text_extraction import TextExtraction
+
 
 # Diretório onde os arquivos serão salvos
 UPLOAD_DIR = "uploads"
@@ -24,20 +25,27 @@ def list_files():
 # Função para salvar o arquivo enviado
 def upload_file(file):
     if not file:
-        return "Nenhum arquivo enviado.", list_files()
-    # Trata file como dict (Blocks) ou path string
-    if isinstance(file, dict):
-        src = file.get("tmp_path")
-        filename = file.get("name")
-    else:
-        src = file
-        filename = os.path.basename(file)
-    dest = os.path.join(UPLOAD_DIR, filename)
-    shutil.copy(src, dest)
-    return f"Arquivo {filename} salvo com sucesso!", list_files()
+        return "File did not sent.", list_files()
+
+    status = "Error"
+    try:
+        filename = str(file).split("/")[-1]
+        if file.endswith('.docx'):
+            text = TextExtraction.extract_docx(file)
+            status = f"File '{filename}' saved."
+        elif file.endswith('.pdf'):
+            text = TextExtraction.extract_pdf(file)
+            status = f"File '{filename}' saved."
+        elif file.endswith('.txt'):
+            text = TextExtraction.extract_txt(file)
+            status = f"File '{filename}' saved."
+        else:
+            status = "File extension not supported."
+    except Exception as e:
+        status += ": " + str(e)
+    return status, list_files()
 
 
-# Criando a interface Gradio
 with gr.Blocks() as demo:
     gr.Markdown("# Página Multifuncional com Gradio")
 
