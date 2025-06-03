@@ -6,8 +6,10 @@ RUN apt-get update && apt-get install -y \
     gcc \
     libffi-dev \
     libpq-dev \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+    build-essential && \
+    apt-get install -y pandoc && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Criar diretório da aplicação
 WORKDIR /gradio_RAG
