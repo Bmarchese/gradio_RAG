@@ -1,29 +1,19 @@
-import pymupdf4llm
+import docx2txt
 import pymupdf
-import pypandoc
-
 
 class TextExtraction:
     @staticmethod
     def extract_pdf(file):
         doc = pymupdf.open(file)
-        markdown = pymupdf4llm.to_markdown(doc)
-        return markdown
+        text = ""
+        for page in doc:
+            text += page.get_text()
+        return text
 
     @staticmethod
     def extract_docx(file):
-        extra_args = [
-            '--wrap=none',  # evita quebra automática de linhas
-        ]
-
-        markdown = pypandoc.convert_file(
-            file,
-            to='gfm',
-            # to='markdown-simple_tables-multiline_tables+pipe_tables',
-            format='docx',
-            extra_args=extra_args
-        )
-        return markdown
+        text = docx2txt.process(file)
+        return text
 
     @staticmethod
     def extract_txt(file):

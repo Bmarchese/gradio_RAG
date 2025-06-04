@@ -1,7 +1,6 @@
-pymupdf4llm==0.0.24
 gradio==5.31.0
-pymupdf4llm==0.0.24
-pypandoc==1.15
+pymupdf==1.26.0
+docx2txt==0.9
 chromadb>=0.4.24
 langchain>=0.1.20
 openai>=1.25.0
